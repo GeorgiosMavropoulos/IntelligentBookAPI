@@ -1,0 +1,48 @@
+# === Python & Virtual Environments ===
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# === Environment Variables & Secrets (CRITICAL for AI & DB Keys) ===
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# === OS & IDE Files ===
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# === AI Agents & Vector Databases (Local Data) ===
+# Prevents committing heavy local models or local vector storage (Chroma, FAISS)
+.chroma/
+chroma_db/
+faiss_index/
+.ollama/
+models/
+*.bin
+*.pkl
+
+# === Agent Logs & Traces ===
+# Keeps development logs and agent run traces out of source control
+*.log
+.langchain/
+agent_outputs/
+
+# === PostgreSQL & Database Specifics ===
+# Prevents committing local database dumps or raw data directories
+*.sql
+*.dump
+pgdata/
+.pgpass
