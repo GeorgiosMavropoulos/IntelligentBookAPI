@@ -317,6 +317,21 @@ Sure! I found 5 fantasy books under €20.
 Would you like something classic, modern, or beginner-friendly?
 ```
 
+## Installation
+Right only basic functionality has been implemented
+In order to see what's going on do the following:
+1. Close the repo: git clone https://github.com/GeorgiosMavropoulos/IntelligentBookAPI.git
+2. Navigate to repo folder
+3. Install uv uvicorn
+4. Initialize uv: uv init
+5. Create venv: uv venv
+6. Activate venv
+7. Install fastapi: uv add fastapi
+8. Install sqlalchemy: uv add sqlalchemy
+
+
+
+
 The agent should rely on **real data from the bookstore backend** rather than having book information hardcoded into the prompt.
 
 ---
