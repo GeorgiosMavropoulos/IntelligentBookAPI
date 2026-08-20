@@ -25,7 +25,7 @@ class Book(Base):
  __table_args__ = (
         # length(title) >= 1 make sure title will never be an empty string
         CheckConstraint("length(title) >= 1", name="title_min_length"),
-       
+
         #validate that year will never be below 0
         CheckConstraint("year >= 1000 AND year <= 2100", name="year_valid_range"),
 
@@ -33,9 +33,18 @@ class Book(Base):
         CheckConstraint("length(isbn) = 10 OR length(isbn) = 13", name="book_isbn_length_valid"),
          #price should be a positive range(> 1)
         CheckConstraint("price >= 1",name="price_positive_range"),
-
+           
         #stock can't be a negative number
         CheckConstraint("stock >=0", name="stock_negative_number"),
+
+        #genre cannot accept empty string
+        CheckConstraint("length(genre) >= 1",name="genre_min_length"),
+
+        #min lang chars
+        CheckConstraint("length(language)>= 1",name="language_min_length"),
+
+          #min description chars
+         CheckConstraint("length(description)>= 1",name="description_min_length"),
         
     )
 
