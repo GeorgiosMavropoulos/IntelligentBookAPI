@@ -9,9 +9,7 @@ load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL") 
 
 
-#initialize declarative base class
-class Base(DeclarativeBase):
-    pass
+
 
 if DATABASE_URL is None:
     raise Exception("Error. Database URL is missing")
