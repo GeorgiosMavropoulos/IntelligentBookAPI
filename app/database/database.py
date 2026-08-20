@@ -1,5 +1,5 @@
 import os
-
+from sqlalchemy.orm import DeclarativeBase
 from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 #load the .env file
@@ -7,6 +7,11 @@ load_dotenv()
 
 #import the Database's url from .env
 DATABASE_URL = os.getenv("DATABASE_URL") 
+
+
+#initialize declarative base class
+class Base(DeclarativeBase):
+    pass
 
 if DATABASE_URL is None:
     raise Exception("Error. Database URL is missing")
