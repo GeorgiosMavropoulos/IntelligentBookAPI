@@ -30,7 +30,7 @@ Thumbs.db
 chroma_db/
 faiss_index/
 .ollama/
-models/
+
 *.bin
 *.pkl
 

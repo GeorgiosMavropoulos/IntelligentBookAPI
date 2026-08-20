@@ -39,41 +39,5 @@ class Book(Base):
         
     )
 
-#create author model
-class Author(Base):
- __tablename__= "authors"
- id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, index=True)
- author: Mapped[str] = mapped_column(String(50),nullable=False, index=True)
-#constains
- __table_args__ = (
-       
-         # length(author) >= 1 make sure title will never be an empty string    
-         CheckConstraint("length(author) >= 1", name="author_min_length"),
 
-     
-         
-     )
 
-#create publisher model
-class Publisher(Base):
- __tablename__ = "publishers"
- id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, index=True)
- publisher:Mapped[str] = mapped_column(String(50),nullable=False, index=True)
- 
-
- #constains
- __table_args__ = (
-       
-         # length(publisher) >= 1 make sure title will never be an empty string    
-         CheckConstraint("length(publisher) >= 1", name="publisher_min_length"),
-
-     
-     
-         
-     )
-
-#create a conjunctions table to connect authors + books
-class AuthorBooks(Base):
- __tablename__ = "author_books"
- book_id: Mapped[int] = mapped_column(Integer,  ForeignKey("books.id", ondelete="CASCADE"),nullable=False,primary_key=True)
- author_id: Mapped[int] = mapped_column(Integer, ForeignKey("authors.id", ondelete="CASCADE"),nullable=False,primary_key=True)
