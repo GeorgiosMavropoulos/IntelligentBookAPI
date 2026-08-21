@@ -4,7 +4,7 @@ from ..models import book_model
 from ..schemas.book_schema import BookCreate, BookUpdate,BookResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select,delete
-from ..database.database import get_db
+
 from fastapi import HTTPException
 from ..exceptions.book_exceptions import DuplicateISBNException,BookNotFoundException
 from sqlalchemy.exc import IntegrityError
