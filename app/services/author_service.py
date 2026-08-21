@@ -64,3 +64,17 @@ class AuthorService:
          return author
 
         
+     #get author by name function
+     async def get_author_by_name(self,author_name:str):
+      #create a variable to delegate to it the result
+      result = await self.db.execute(select(author_model.Author).where(author_model.Author.author == author_name))
+
+      #check if author exists
+      author =  result.scalar_one_or_none()
+       #return an error message if author does not exist
+      if author is None:
+       raise AuthorNotFoundException("Author does not exist")
+
+       #return author if exists
+       return author
+      
