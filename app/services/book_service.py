@@ -9,10 +9,21 @@ from fastapi import HTTPException
 class BookService:
      def __init__(self, db:AsyncSession):
         self.db = db
+    #create book function
+     async def create_book(self, book: BookCreate):
+        #try except for error handling
+        try:
+            book = book_model(title=book.title,
+                            year=book.year,price=book.price,genre=book.genre,language=book.language, description = book.description, publisher_id=book.publisher_id,stock=book.stock)
 
-#create book function
-async def create_book():
-
+            #add the book
+            self.db.add(book)
+            await self.db.commit() #commit the change in the db
+            #refresh
+            self.db.refresh(book)
+        except: #return an error if sth goes wrong and rollbakc the action
+            await self.db.rollback()
+            raise
 
 
 
