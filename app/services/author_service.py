@@ -45,7 +45,7 @@ class AuthorService:
          result = await self.db.execute(select(author_model.Author).offset(skip).limit(limit))
 
          #return the result
-         return result.scalars().all
+         return result.scalars().all()
 
 
      #get author by id 
@@ -76,5 +76,42 @@ class AuthorService:
        raise AuthorNotFoundException("Author does not exist")
 
        #return author if exists
-       return author
+      return author
       
+
+
+     #update author function
+     async def update_author(self,author:AuthorUpdate,author_id:int):
+        #try except for error handling
+         try:
+          #try to retrieve the requested author to see if exists
+          result = await self.db.execute(select(author_model.Author).where(author_model.Author.id == author_id))
+
+          #retrieve the result from the object
+          update_author = result.scalar_one_or_none()
+
+          #return an error message if author not found
+          if update_author is None:
+             raise AuthorNotFoundException("Cannot find the requested author")
+
+          update_data = author.model_dump(exclude_unset=True) #use model dump since not all attributes should be changed
+          #if all goes well update the author's name
+          for field, value in update_data.items():
+             setattr(update_author,field,value)
+
+          #commit the action
+          await self.db.commit()
+          #refresh
+          await self.db.refresh(update_author)
+
+          #return the author
+          return update_author
+         
+         #return an exception if author's name is duplicate
+         except IntegrityError as e:
+          await self.db.rollback() #roll back the action if update fails
+          raise DuplicateAuthorxception(author.author) from e
+         
+         except:
+            await self.db.rollback() #roll back the action if update fails
+            raise
