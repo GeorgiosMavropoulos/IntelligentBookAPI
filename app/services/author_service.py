@@ -40,9 +40,27 @@ class AuthorService:
 
 
       #get all authors
-      async def get_all_authors(self, skip: int = 0, limit: int = 100):
+     async def get_all_authors(self, skip: int = 0, limit: int = 100):
          #create a variable to delegate to it the result
          result = await self.db.execute(select(author_model.Author).offset(skip).limit(limit))
 
          #return the result
          return result.scalars().all
+
+
+     #get author by id 
+     async def get_author_by_id(self, author_id:int):
+        #create a variable to delegate to it the result
+         result = await self.db.execute(select(author_model.Author).where(author_model.Author.id == author_id))
+
+          #check if author exists
+         author =  result.scalar_one_or_none()
+
+         #return an error message if author does not exist
+         if author is None:
+            raise AuthorNotFoundException("Author does not exist")
+
+         #return author if exists
+         return author
+
+        
