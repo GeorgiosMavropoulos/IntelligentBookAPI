@@ -5,8 +5,8 @@ from ..schemas.book_schema import BookCreate, BookUpdate,BookResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select,delete
 
-from fastapi import HTTPException
-from ..exceptions.book_exceptions import DuplicateISBNException,BookNotFoundException
+
+from ..exceptions.book_exceptions.book_exceptions import DuplicateISBNException,BookNotFoundException
 from sqlalchemy.exc import IntegrityError
 #create book service class
 class BookService:

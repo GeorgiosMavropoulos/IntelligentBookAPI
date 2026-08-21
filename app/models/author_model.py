@@ -9,7 +9,7 @@ from ..database.base import Base
 class Author(Base):
  __tablename__= "authors"
  id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, index=True)
- author: Mapped[str] = mapped_column(String(50),nullable=False, index=True)
+ author: Mapped[str] = mapped_column(String(50),nullable=False, index=True, unique=True)
 #constains
  __table_args__ = (
        
