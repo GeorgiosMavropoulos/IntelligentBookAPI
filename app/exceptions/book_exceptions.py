@@ -3,3 +3,7 @@
 #first exception class ISBN uniqueness
 class DuplicateISBNException(Exception):
     pass
+
+##book not found exception
+class BookNotFoundException(Exception):
+    pass
