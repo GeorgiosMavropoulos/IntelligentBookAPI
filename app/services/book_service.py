@@ -61,5 +61,22 @@ class BookService:
           return book
 
 
+    #get book by title method
+     async  def get_books_by_title(self,book_title:str):
+      #create a variable to delegate to it the result
+      result = await self.db.execute(select(book_model.Book).where(book_model.Book.title == book_title))
+      #return the result
+      books = result.scalars().all()
+
+       #return an error message if book does not exist
+      if len(books) == 0:
+         raise BookNotFoundException("Book does not exist")  
+      
+     #finally return the book if all goes well
+      return books
+
+         
+    
+
 
 
