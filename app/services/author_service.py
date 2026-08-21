@@ -37,3 +37,12 @@ class AuthorService:
          #return an exception and rollback the action
          await self.db.rollback()
          raise
+
+
+      #get all authors
+      async def get_all_authors(self, skip: int = 0, limit: int = 100):
+         #create a variable to delegate to it the result
+         result = await self.db.execute(select(author_model.Author).offset(skip).limit(limit))
+
+         #return the result
+         return result.scalars().all
