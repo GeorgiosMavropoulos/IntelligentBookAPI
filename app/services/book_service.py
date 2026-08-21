@@ -3,7 +3,7 @@ from ..models import book_model
 #import update/create from schemas
 from ..schemas.book_schema import BookCreate, BookUpdate,BookResponse
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select,update
 from ..database.database import get_db
 from fastapi import HTTPException
 from ..exceptions.book_exceptions import DuplicateISBNException,BookNotFoundException
@@ -76,7 +76,43 @@ class BookService:
       return books
 
          
-    
+     #update book method
+     async def update_book(self,book:BookUpdate,book_id:int):
+       #try except for error handling
+       try:
+           #try to retrieve the requested book
+           result = await self.db.execute(select(book_model.Book).where(book_model.Book.id == book_id))
+
+
+           #if all goes well delegate book's deatails into a variable
+           book = result.scalar_one_or_none()
+
+           
+            #return  exception if book does not exist
+           if book is None:
+            raise BookNotFoundException("Book does not exist")  
+
+           update_data = book.model_dump(exclude_unset=True) #use model dump since not all attributes should be changed
+
+           #loop through attributes in order to change what was given
+           for field, value in update_data.items():
+               setattr(book, field, value)
+        
+           #commit
+           await self.db.commit()
+
+           #return the book
+           return book
+                    
+       #raise exception for duplicate isbn
+       except IntegrityError as e:
+               await self.db.rollback()
+               raise DuplicateISBNException(book.isbn) from e
+       except: #return an error if sth goes wrong and rollbakc the action
+               await self.db.rollback()
+               raise       
+         
+     
 
 
 
