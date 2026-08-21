@@ -20,7 +20,7 @@ class Book(Base):
  created_at: Mapped[datetime] = mapped_column(DateTime,server_default=func.now(), nullable=False)
  updated_at: Mapped[datetime] = mapped_column(DateTime,server_default=func.now(), onupdate=func.now(),nullable=False)
  stock: Mapped[int] = mapped_column(Integer, nullable=False)
- publisher_id: Mapped[int] = mapped_column(Integer, ForeignKey("publishers.id", ondelete="CASCADE"),nullable=False)
+ publisher_id: Mapped[int] = mapped_column(Integer, ForeignKey("publishers.id"),nullable=False)
  #constrains
  __table_args__ = (
         # length(title) >= 1 make sure title will never be an empty string

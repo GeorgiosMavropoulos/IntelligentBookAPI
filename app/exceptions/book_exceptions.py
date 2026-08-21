@@ -1,5 +1,5 @@
 ##this file contains exception classes for book
 
 #first exception class ISBN uniqueness
-class DuplicateISBN(Exception):
+class DuplicateISBNException(Exception):
     pass
