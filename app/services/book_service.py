@@ -37,7 +37,7 @@ class BookService:
 
 
      #create get all books method
-     async def get_all_books(self,skip: int = 0, limit: int = 10):
+     async def get_all_books(self,skip: int = 0, limit: int = 100):
        
              #create a variable to delegate to it the result
              result = await self.db.execute(select(book_model.Book).offset(skip).limit(limit))
