@@ -3,7 +3,7 @@ from ..models import book_model
 #import update/create from schemas
 from ..schemas.book_schema import BookCreate, BookUpdate,BookResponse
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select,update
+from sqlalchemy import select,delete
 from ..database.database import get_db
 from fastapi import HTTPException
 from ..exceptions.book_exceptions import DuplicateISBNException,BookNotFoundException
@@ -110,7 +110,29 @@ class BookService:
                raise DuplicateISBNException(book.isbn) from e
        except: #return an error if sth goes wrong and rollbakc the action
                await self.db.rollback()
-               raise       
+               raise     
+
+
+
+       #method to delete a book      
+     async def delete_book(self,book_id:int):           
+        try:
+          #create a variable to delegate to it the result
+          delete_book = await self.db.execute(delete(book_model.Book).where(book_model.Book.id == book_id))
+         
+          #create a variable delete_rows to access row count
+          deleted_rows = delete_book.rowcount
+          #return an error message if book does not exist
+          if deleted_rows <= 0:
+           raise BookNotFoundException("Book does not exist")
+
+          #commit if all goes well
+          await self.db.commit()
+          #finally return the book if all goes well
+          return delete_book 
+        except:
+           await  self.db.rollback()
+           raise
          
      
 
