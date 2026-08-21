@@ -115,3 +115,30 @@ class AuthorService:
          except:
             await self.db.rollback() #roll back the action if update fails
             raise
+
+
+
+
+         #function to delete author
+     async def delete_author(self,author_id:int):
+          try:
+
+           #create a variable to delegate delete method
+           delete_author = await self.db.execute(delete(author_model.Author).where(author_model.Author.id == author_id))
+
+            #create a variable delete_rows to access row count
+           delete_rows = delete_author.rowcount
+           #return an error message if no row got deleted
+           if delete_rows <= 0:
+              raise AuthorNotFoundException("This author does not exist")
+
+           #if all goes well commit
+           await self.db.commit()
+           #return author objct
+           return delete_author
+
+          except:
+                 #rollback
+                 await self.db.rollback()
+                 raise
+        
