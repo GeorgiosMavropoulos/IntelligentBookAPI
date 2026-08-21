@@ -54,6 +54,7 @@ class BookUpdate(BookBase):
 
 #book response
 class BookResponse(BookBase):
+     id: int
      #tell pydantic to read ORM models
      model_config = ConfigDict(from_attributes=True)
      #return from server created and updated date
