@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from ..database.database import get_db
 from fastapi import HTTPException
-from ..exceptions.book_exceptions import DuplicateISBNException
+from ..exceptions.book_exceptions import DuplicateISBNException,BookNotFoundException
 from sqlalchemy.exc import IntegrityError
 #create book service class
 class BookService:
@@ -43,7 +43,22 @@ class BookService:
              result = await self.db.execute(select(book_model.Book).offset(skip).limit(limit))
              #return the result
              return result.scalars().all()
-         
+
+
+     #get book by id method
+     async def get_book_by_id(self,book_id:int):
+        
+          #create a variable to delegate to it the result
+          result = await self.db.execute(select(book_model.Book).where(book_model.Book.id == book_id))
+          #return the result
+          book = result.scalar_one_or_none()
+
+          #return an error message if book does not exist
+          if book is None:
+           raise BookNotFoundException("Book does not exist")  
+
+          #finally return the book if all goes well
+          return book
 
 
 
