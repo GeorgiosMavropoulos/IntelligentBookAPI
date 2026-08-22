@@ -30,9 +30,20 @@ async def create_publisher(publisher:PublisherCreate,publisher_service = Depends
 #get router
 @router.get('/',status_code=status.HTTP_200_OK)
 #method to get the publishers
-async def get_publisher(skip: int = 0, limit: int = 10,publisher_service = Depends(get_publisher_service)):
+async def get_publishers(skip: int = 0, limit: int = 10,publisher_service = Depends(get_publisher_service)):
   #use the get method to retrieve items
   publishers = await publisher_service.get_all_publishers(skip,limit)
 
   #return the result
   return publishers
+
+
+#get publisher by id
+@router.get('/{id}',status_code=status.HTTP_200_OK)
+#method to retrieve the publisher
+async def get_publisher(id:int,publisher_service = Depends(get_publisher_service)):
+   #use the get method to retrieve items
+   publisher = await publisher_service.get_publisher_by_id(id)
+   #return the result
+   return publisher
+   
