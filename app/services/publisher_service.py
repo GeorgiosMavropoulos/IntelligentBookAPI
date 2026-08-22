@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select,delete
 
 from sqlalchemy.exc import IntegrityError
-from ..exceptions.publisher_exceptions.publisher_exceptions import DuplicatePublisher
+from ..exceptions.publisher_exceptions.publisher_exceptions import DuplicatePublisher, PublisherNotFound
 
 #create the publisher service
 class PublisherService:
@@ -44,4 +44,22 @@ class PublisherService:
 
        #return the publishers
        return publishers.scalars().all()
+
+
+    #get publisher by id method
+    async def get_publisher_by_id(self,publisher_id:int):
+     
+       #execute the query and delegate the result 
+       get_publisher = await self.db.execute(select(publisher_model.Publisher).where(publisher_model.Publisher.id == publisher_id ))
+
+       ##get the result using scalars
+       publisher = get_publisher.scalar_one_or_none()
+
+       #return an error message if publisher doesn't exist
+       if publisher is None:
+          raise PublisherNotFound("The publisher you are looking for does not exist")
+
+
+       #return publisher if all goes well
+       return publisher
 
