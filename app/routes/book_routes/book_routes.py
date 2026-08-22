@@ -60,7 +60,18 @@ async def get_books(title:str,book_service= Depends(get_book_service)):
 @router.put('/{book_id}',status_code=status.HTTP_200_OK)
 #method to update the book
 async def update(book:BookUpdate, book_id:int, book_service= Depends(get_book_service)):
-    #Call upodate book method
+    #Call update book method
     book_to_update = await book_service.update_book(book,book_id)
 
     return {"message":"The book has been updated with success","data":book_to_update}
+
+
+#delete endpoint
+@router.delete('/{book_id}',status_code=status.HTTP_204_NO_CONTENT)
+#method to delete the book
+async def delete(book_id:int, book_service= Depends(get_book_service)):
+  #call delete book method
+  book_to_delete = await book_service.delete_book(book_id)
+
+  #return the result with a message of success
+  return {"message":"The book has been deleted with success"}
