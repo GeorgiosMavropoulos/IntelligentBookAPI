@@ -63,3 +63,19 @@ class PublisherService:
        #return publisher if all goes well
        return publisher
 
+    #get publisher by its name
+    async def get_publisher_by_name(self,publisher_name:str):
+       #create a variable to delegate to it the result
+       get_publisher  = await self.db.execute(select(publisher_model.Publisher).where(publisher_model.Publisher.publisher == publisher_name))
+
+       ##get the result using scalars
+       publisher = get_publisher.scalar_one_or_none()
+
+       
+       #return an error message if publisher doesn't exist
+       if publisher is None:
+          raise PublisherNotFound("The publisher you are looking for does not exist")
+
+
+        #return publisher if all goes well
+       return publisher
