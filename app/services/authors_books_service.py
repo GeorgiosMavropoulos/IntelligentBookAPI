@@ -100,10 +100,26 @@ class AuthorsBooksService:
          books_authors = get_books_authors.scalars().all()
 
          #return an error message if not found
-         if books_authors is None:
+         if len(books_authors) == 0:
              raise AuthorNotFoundException("No relations found about the requested author")
          #return the result
          return books_authors
+
+
+    #method to get by book's id
+    async def get_by_author_id(self,book_id:int):
+     #create a variable to delegate the result from select query
+     get_books_authors = await self.db.execute(select(book_authors_model).where(book_authors_model.AuthorBooks.book_id == book_id))
+    
+     #extract the result
+     books_authors = get_books_authors.scalars().all()
+    
+     #return an error message if not found
+     if len(books_authors) == 0:
+       raise BookNotFoundException("No relations found about the requested book")
+     
+       #return the result
+     return books_authors
 
 
 
