@@ -82,13 +82,29 @@ class AuthorsBooksService:
     async def get_authors_books(self,skip:int=0, limit:int = 100):
 
         #create a variable to delegate the result from select query
-        get_books_authors = await self.db.execute(select(book_authors_model).offset(skip).limit(limit))
+        get_books_authors = await self.db.execute(select(book_authors_model.AuthorBooks).offset(skip).limit(limit))
 
         #use scalars to extract the  result
         books_authors = get_books_authors.scalars().all()
 
         #return the result
         return books_authors
+
+
+    #method to get by author's id
+    async def get_by_author_id(self,author_id:int):
+         #create a variable to delegate the result from select query
+         get_books_authors = await self.db.execute(select(book_authors_model).where(book_authors_model.AuthorBooks.author_id == author_id))
+
+         #extract the result
+         books_authors = get_books_authors.scalars().all()
+
+         #return an error message if not found
+         if books_authors is None:
+             raise AuthorNotFoundException("No relations found about the requested author")
+         #return the result
+         return books_authors
+
 
 
         
