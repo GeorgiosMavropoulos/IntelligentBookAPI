@@ -76,4 +76,19 @@ class AuthorsBooksService:
             raise
 
 
+
+
+        #method to get the relation
+    async def get_authors_books(self,skip:int=0, limit:int = 100):
+
+        #create a variable to delegate the result from select query
+        get_books_authors = await self.db.execute(select(book_authors_model).offset(skip).limit(limit))
+
+        #use scalars to extract the  result
+        books_authors = get_books_authors.scalars().all()
+
+        #return the result
+        return books_authors
+
+
         
