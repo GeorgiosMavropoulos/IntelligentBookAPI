@@ -10,6 +10,9 @@ from app.routes.book_routes import book_routes
 ##create an instance of fastAPI
 app = FastAPI()
 
+
+from app.models import book_model, publisher_model, author_model, book_authors_model
+
 #register books router
 app.include_router(book_routes.router)
 

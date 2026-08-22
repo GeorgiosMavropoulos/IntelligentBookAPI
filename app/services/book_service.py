@@ -4,9 +4,10 @@ from ..models.book_model import Book
 from ..schemas.book_schema import BookCreate, BookUpdate,BookResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select,delete
+#import publisher to check if exist
+from ..models.publisher_model import Publisher
 
-
-from ..exceptions.book_exceptions.book_exceptions import DuplicateISBNException,BookNotFoundException
+from ..exceptions.book_exceptions.book_exceptions import DuplicateISBNException,BookNotFoundException,PublisherNotFound
 from sqlalchemy.exc import IntegrityError
 #create book service class
 class BookService:
@@ -16,21 +17,37 @@ class BookService:
      async def create_book(self, book: BookCreate):
         #try except for error handling
         try:
+
+
+            #search if given publisher exists
+            get_publisher = await self.db.execute(select(Publisher).where(Publisher.id == book.publisher_id))
+            #use scalars to get the result into ORM format
+            publisher = get_publisher.scalar_one_or_none()
+
+            #return an error message if publisher does not exist
+            if publisher is None:
+                raise PublisherNotFound("The given publisher does not exist.Please create the publisher first")
+ 
+
             #delegate into a a variable model's attributes
-            book = Book(title=book.title,
+            new_book = Book(title=book.title,
             year=book.year, isbn=book.isbn,price=book.price,genre=book.genre,language=book.language, description = book.description, publisher_id=book.publisher_id,stock=book.stock)
 
             #add the book
-            self.db.add(book)
+            self.db.add(new_book)
             await self.db.commit() #commit the change in the db
             #refresh
-            await  self.db.refresh(book)
-            return book #return the response
+            await  self.db.refresh(new_book)
+            return new_book #return the response
 
             #raise exception for duplicate isbn
         except IntegrityError as e:
             await self.db.rollback()
-            raise DuplicateISBNException(book.isbn) from e
+            
+            if "isbn" in str(e.orig).lower():
+              raise DuplicateISBNException(book.isbn) from e
+            raise
+        
         except: #return an error if sth goes wrong and rollbakc the action
             await self.db.rollback()
             raise
