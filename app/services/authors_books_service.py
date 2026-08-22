@@ -1,7 +1,7 @@
 #import book and author not found exceptions since I will need to check if book and author actually exist
 from ..exceptions.author_exceptions.author_exceptions import AuthorNotFoundException
 from ..exceptions.book_exceptions.book_exceptions import BookNotFoundException
-from ..exceptions.authors_books_exceptions.authors_books_exceptions import DuplicateAuthorBookEntry
+from ..exceptions.authors_books_exceptions.authors_books_exceptions import DuplicateAuthorBookEntry, NotFound
 from ..models.book_authors_model import AuthorBooks
 from ..schemas.book_authors_schema import CreateBookAuthors
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -120,6 +120,35 @@ class AuthorsBooksService:
      
        #return the result
      return books_authors
+
+
+
+    #delete relation 
+    async def delete_relation(self, book_id:int, author_id:int):
+        try:
+            #create a variable and delegate the delete query
+         delete_data = await self.db.execute(delete(book_authors_model.AuthorBooks)
+                       .where(book_authors_model.AuthorBooks.book_id == book_id, book_authors_model.AuthorBooks.author_id == author_id))
+
+         #verify that rows were actually deleted
+         #create a variable to delegate row count
+         deleted_rows = delete_data.rowcount
+
+         #return an error if deleted_rows <= 0
+         if deleted_rows <=0:
+             await self.db.rollback()
+             raise NotFound("Author and book relation does not exist")
+
+
+         #commit if all goes well
+         await self.db.commit()
+
+         #return the result
+         return delete_data
+        #return a general exception and rollback
+        except:
+            await self.db.rollback()
+            raise
 
 
 
