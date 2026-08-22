@@ -37,3 +37,11 @@ class PublisherService:
            await self.db.rollback()
            raise
 
+    #get all publishers method
+    async def get_all_publishers(self, skip: int = 0, limit: int = 100):
+       #execute the query and delegate into a variable the result
+       publishers = await self.db.execute(select(publisher_model.Publisher).offset(skip).limit(limit))
+
+       #return the publishers
+       return publishers.scalars().all()
+
