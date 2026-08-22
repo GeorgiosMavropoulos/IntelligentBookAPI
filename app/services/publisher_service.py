@@ -117,3 +117,29 @@ class PublisherService:
        except:
           await self.db.rollback()
           raise
+
+
+
+       #delete publisher method
+    async def delete_publisher(self,publisher_id:int):
+       #try-except for error handling
+       try:
+          #declare a variable to store the result from the deletion query
+          publisher_delete = await self.db.execute(delete(publisher_model.Publisher).where(publisher_model.Publisher.id == publisher_id))
+
+          ##create a variable delete_rows to access row count
+          deleted_rows = publisher_delete.rowcount
+
+          #return an error message if row count == 0
+          if deleted_rows <=0:
+             raise PublisherNotFound("The publisher you tried to delete, does not exist")
+
+          #if all goes well commit
+          await self.db.commit()
+        
+
+          #return the result
+          return publisher_delete
+       except:
+           await  self.db.rollback()
+           raise
