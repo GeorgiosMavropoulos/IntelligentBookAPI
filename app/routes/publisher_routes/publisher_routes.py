@@ -24,7 +24,10 @@ async def create_publisher(publisher:PublisherCreate,publisher_service = Depends
     #call the create method from publisher service
     new_publisher = await  publisher_service.create_publisher(publisher)
     #return the result
-    return new_publisher
+    return {
+        "message": "Publisher created with success",
+        "data":  new_publisher
+    }
 
 
 #get router
@@ -35,7 +38,7 @@ async def get_publishers(skip: int = 0, limit: int = 10,publisher_service = Depe
   publishers = await publisher_service.get_all_publishers(skip,limit)
 
   #return the result
-  return publishers
+  return {"message":"Success", "data":publishers}
 
 
 #get publisher by id
@@ -45,7 +48,7 @@ async def get_publisher(id:int,publisher_service = Depends(get_publisher_service
    #use the get method to retrieve items
    publisher = await publisher_service.get_publisher_by_id(id)
    #return the result
-   return publisher
+   return {"message":"Success", "data":publisher}
 
 
 
@@ -56,7 +59,7 @@ async def get_publisher(publisher_name:str,publisher_service = Depends(get_publi
    #use the get method to retrieve items
    publisher = await publisher_service.get_publisher_by_name(publisher_name)
    #return the result
-   return publisher
+   return {"message":"Success", "data":publisher}
 
 
 
@@ -68,7 +71,7 @@ async def update_publisher(publisher: PublisherUpdate,publisher_id:int,publisher
    update_publisher = await publisher_service.update_publisher(publisher_id,publisher)
 
    #return the result
-   return update_publisher
+   return {"message":"Publisher updated with success","data":update_publisher}
 
 
 #delete publisher router
@@ -78,5 +81,5 @@ async def delete(publisher_id:int,publisher_service = Depends(get_publisher_serv
    #call the service method to delete the publisher
    delete_publisher = await publisher_service.delete_publisher(publisher_id)
    #return the result
-   return delete_publisher
+   return {"message": "Publisher deleted successfully"}
    
