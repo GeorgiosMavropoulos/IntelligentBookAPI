@@ -57,4 +57,16 @@ async def get_publisher(publisher_name:str,publisher_service = Depends(get_publi
    publisher = await publisher_service.get_publisher_by_name(publisher_name)
    #return the result
    return publisher
+
+
+
+#update publisher routerS
+@router.put('/{publisher_id}',status_code=status.HTTP_201_CREATED)
+#method to update the publisher
+async def update_publisher(publisher: PublisherUpdate,publisher_id:int,publisher_service = Depends(get_publisher_service)):
+   #call the service method to update the publisher\
+   update_publisher = await publisher_service.update_publisher(publisher_id,publisher)
+
+   #return the result
+   return update_publisher
    
