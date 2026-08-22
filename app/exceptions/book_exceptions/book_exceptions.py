@@ -7,3 +7,8 @@ class DuplicateISBNException(Exception):
 ##book not found exception
 class BookNotFoundException(Exception):
     pass
+
+
+#publisher does not exist
+class PublisherNotFound(Exception):
+    pass
