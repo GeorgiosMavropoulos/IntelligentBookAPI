@@ -79,3 +79,41 @@ class PublisherService:
 
         #return publisher if all goes well
        return publisher
+
+    #update publisher
+    async def update_publisher(self,publisher_id:int,publisher:PublisherUpdate):
+       #try-except to handle errors
+       try:
+          #retrieve the requested publisher by their id
+          result = await self.db.execute(select(publisher_model.Publisher).where(publisher_model.Publisher.id == publisher_id))
+
+          #use scalars to convert the object
+          updated_publisher= result.scalar_one_or_none()
+
+          #return an error message if publisher does not exists
+          if updated_publisher is None:
+             raise PublisherNotFound("Publisher does not exist")
+
+          #use model dump since not all attributes need to change. now it's one attribute but later we may add more
+          update_data = publisher.model_dump(exclude_unset=True)
+
+          #for loop to loop through the attributes and change what it's needed
+          for field,value in update_data.items():
+             setattr(updated_publisher,field,value)
+
+         #commit the change
+          await self.db.commit()
+          #refresh
+          await self.db.refresh(updated_publisher)
+
+          #return the objct
+          return updated_publisher
+       #exception if publisher's name is duplicate
+       except IntegrityError as e:
+          #rollback to cancel the db operation
+          await self.db.rollback()
+          raise DuplicatePublisher(publisher.publisher) from e
+       #return a general exception
+       except:
+          await self.db.rollback()
+          raise
