@@ -34,5 +34,13 @@ async def get_books(skip:int = 0,limit:int = 100,book_service= Depends(get_book_
     #return the books 
     return {"message":"Success","data":books}
 
+#get book by id
+@router.get('/{id}',status_code=status.HTTP_200_OK)
+#method to get book by id
+async def get_books(id:int,book_service= Depends(get_book_service)):
+    #call get book by id
+    books = await book_service.get_book_by_id(id)
 
+    #return the books 
+    return {"message":"Success","data":books}
 
