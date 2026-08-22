@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from ...database.database import get_db
 from sqlalchemy.ext.asyncio import AsyncSession 
-from ...services.book_service import BookService, BookCreate
+from ...services.book_service import BookService, BookCreate,BookUpdate
 from ...schemas.book_schema import BookResponse
 #initialize the router 
 router = APIRouter(prefix="/books", tags=["Books"])
@@ -56,3 +56,11 @@ async def get_books(title:str,book_service= Depends(get_book_service)):
     #return the books 
     return {"message":"Success","data":books}
 
+#update book endpoint
+@router.put('/{book_id}',status_code=status.HTTP_200_OK)
+#method to update the book
+async def update(book:BookUpdate, book_id:int, book_service= Depends(get_book_service)):
+    #Call upodate book method
+    book_to_update = await book_service.update_book(book,book_id)
+
+    return {"message":"The book has been updated with success","data":book_to_update}
