@@ -102,24 +102,25 @@ class BookService:
 
 
            #if all goes well delegate book's deatails into a variable
-           book = result.scalar_one_or_none()
+           updated_book = result.scalar_one_or_none()
 
            
             #return  exception if book does not exist
-           if book is None:
+           if updated_book is None:
             raise BookNotFoundException("Book does not exist")  
 
            update_data = book.model_dump(exclude_unset=True) #use model dump since not all attributes should be changed
 
            #loop through attributes in order to change what was given
            for field, value in update_data.items():
-               setattr(book, field, value)
+               setattr(updated_book, field, value)
         
            #commit
            await self.db.commit()
+           await self.db.refresh(updated_book)
 
            #return the book
-           return book
+           return updated_book
                     
        #raise exception for duplicate isbn
        except IntegrityError as e:
