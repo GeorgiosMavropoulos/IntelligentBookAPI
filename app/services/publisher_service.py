@@ -1,4 +1,4 @@
-from ..models import publisher_model
+from ..models.publisher_model import Publisher
 from ..schemas.publisher_schema import PublisherCreate, PublisherUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select,delete
@@ -16,7 +16,7 @@ class PublisherService:
     async def create_publisher(self,publisher:PublisherCreate):
         try:
          #delegate into a a variable model's attributes
-         publisher = publisher_model(publisher =publisher.publisher)
+         publisher = Publisher(publisher =publisher.publisher)
 
          #add the puiblisher
          self.db.add(publisher)
@@ -40,7 +40,7 @@ class PublisherService:
     #get all publishers method
     async def get_all_publishers(self, skip: int = 0, limit: int = 100):
        #execute the query and delegate into a variable the result
-       publishers = await self.db.execute(select(publisher_model.Publisher).offset(skip).limit(limit))
+       publishers = await self.db.execute(select(Publisher).offset(skip).limit(limit))
 
        #return the publishers
        return publishers.scalars().all()
@@ -50,7 +50,7 @@ class PublisherService:
     async def get_publisher_by_id(self,publisher_id:int):
      
        #execute the query and delegate the result 
-       get_publisher = await self.db.execute(select(publisher_model.Publisher).where(publisher_model.Publisher.id == publisher_id ))
+       get_publisher = await self.db.execute(select(Publisher).where(Publisher.id == publisher_id ))
 
        ##get the result using scalars
        publisher = get_publisher.scalar_one_or_none()
@@ -66,7 +66,7 @@ class PublisherService:
     #get publisher by its name
     async def get_publisher_by_name(self,publisher_name:str):
        #create a variable to delegate to it the result
-       get_publisher  = await self.db.execute(select(publisher_model.Publisher).where(publisher_model.Publisher.publisher == publisher_name))
+       get_publisher  = await self.db.execute(select(Publisher).where(Publisher.publisher == publisher_name))
 
        ##get the result using scalars
        publisher = get_publisher.scalar_one_or_none()
@@ -85,7 +85,7 @@ class PublisherService:
        #try-except to handle errors
        try:
           #retrieve the requested publisher by their id
-          result = await self.db.execute(select(publisher_model.Publisher).where(publisher_model.Publisher.id == publisher_id))
+          result = await self.db.execute(select(Publisher).where(Publisher.id == publisher_id))
 
           #use scalars to convert the object
           updated_publisher= result.scalar_one_or_none()
@@ -125,7 +125,7 @@ class PublisherService:
        #try-except for error handling
        try:
           #declare a variable to store the result from the deletion query
-          publisher_delete = await self.db.execute(delete(publisher_model.Publisher).where(publisher_model.Publisher.id == publisher_id))
+          publisher_delete = await self.db.execute(delete(Publisher).where(Publisher.id == publisher_id))
 
           ##create a variable delete_rows to access row count
           deleted_rows = publisher_delete.rowcount
