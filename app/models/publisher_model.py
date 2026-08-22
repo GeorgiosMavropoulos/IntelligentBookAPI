@@ -9,7 +9,7 @@ from ..database.base import Base
 class Publisher(Base):
  __tablename__ = "publishers"
  id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, index=True)
- publisher:Mapped[str] = mapped_column(String(50),nullable=False, index=True)
+ publisher:Mapped[str] = mapped_column(String(50),nullable=False, unique=True, index=True)
  
 
  #constains
