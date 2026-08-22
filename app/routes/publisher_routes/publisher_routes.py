@@ -46,4 +46,15 @@ async def get_publisher(id:int,publisher_service = Depends(get_publisher_service
    publisher = await publisher_service.get_publisher_by_id(id)
    #return the result
    return publisher
+
+
+
+#get publisher by name
+@router.get('/name/{publisher_name}',status_code=status.HTTP_200_OK)
+#method to retrieve the publisher
+async def get_publisher(publisher_name:str,publisher_service = Depends(get_publisher_service)):
+   #use the get method to retrieve items
+   publisher = await publisher_service.get_publisher_by_name(publisher_name)
+   #return the result
+   return publisher
    
