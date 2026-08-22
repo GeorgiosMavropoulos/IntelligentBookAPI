@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict
 
-from typing import Annotated
+from typing import Annotated,Optional
 
 ##create types using annotated in order not to repeat myself later
 AuthorName = Annotated[str, Field(min_length=1, max_length=50,description="Author's name")]
@@ -16,7 +16,7 @@ class AuthorCreate(AuthorBase):
 
 #Update Author 
 class AuthorUpdate(AuthorBase):
-    author: AuthorName | None = None #optional update
+    author: Optional[AuthorName] = None #optional update
 
 
 

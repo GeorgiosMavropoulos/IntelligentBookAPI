@@ -1,5 +1,5 @@
 #import book model
-from ..models import book_model
+from ..models.book_model import Book
 #import update/create from schemas
 from ..schemas.book_schema import BookCreate, BookUpdate,BookResponse
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,7 +17,7 @@ class BookService:
         #try except for error handling
         try:
             #delegate into a a variable model's attributes
-            book = book_model(title=book.title,
+            book = Book(title=book.title,
             year=book.year, isbn=book.isbn,price=book.price,genre=book.genre,language=book.language, description = book.description, publisher_id=book.publisher_id,stock=book.stock)
 
             #add the book
@@ -40,7 +40,7 @@ class BookService:
      async def get_all_books(self,skip: int = 0, limit: int = 100):
        
              #create a variable to delegate to it the result
-             result = await self.db.execute(select(book_model.Book).offset(skip).limit(limit))
+             result = await self.db.execute(select(Book).offset(skip).limit(limit))
              #return the result
              return result.scalars().all()
 
@@ -49,7 +49,7 @@ class BookService:
      async def get_book_by_id(self,book_id:int):
         
           #create a variable to delegate to it the result
-          result = await self.db.execute(select(book_model.Book).where(book_model.Book.id == book_id))
+          result = await self.db.execute(select(Book).where(Book.id == book_id))
           #return the result
           book = result.scalar_one_or_none()
 
@@ -64,7 +64,7 @@ class BookService:
     #get book by title method
      async  def get_books_by_title(self,book_title:str):
       #create a variable to delegate to it the result
-      result = await self.db.execute(select(book_model.Book).where(book_model.Book.title == book_title))
+      result = await self.db.execute(select(Book).where(Book.title == book_title))
       #return the result
       books = result.scalars().all()
 
@@ -81,7 +81,7 @@ class BookService:
        #try except for error handling
        try:
            #try to retrieve the requested book
-           result = await self.db.execute(select(book_model.Book).where(book_model.Book.id == book_id))
+           result = await self.db.execute(select(Book).where(Book.id == book_id))
 
 
            #if all goes well delegate book's deatails into a variable
@@ -118,7 +118,7 @@ class BookService:
      async def delete_book(self,book_id:int):           
         try:
           #create a variable to delegate to it the result
-          delete_book = await self.db.execute(delete(book_model.Book).where(book_model.Book.id == book_id))
+          delete_book = await self.db.execute(delete(Book).where(Book.id == book_id))
          
           #create a variable delete_rows to access row count
           deleted_rows = delete_book.rowcount
