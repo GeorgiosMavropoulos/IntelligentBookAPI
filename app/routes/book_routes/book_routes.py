@@ -44,3 +44,15 @@ async def get_books(id:int,book_service= Depends(get_book_service)):
     #return the books 
     return {"message":"Success","data":books}
 
+
+
+#get book by title
+@router.get('/title/{title}',status_code=status.HTTP_200_OK)
+#method to get book by title
+async def get_books(title:str,book_service= Depends(get_book_service)):
+    #call get book by id
+    books = await book_service.get_books_by_title(title) #it can retrieve multiple books since they may share the same title
+
+    #return the books 
+    return {"message":"Success","data":books}
+
