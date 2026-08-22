@@ -7,6 +7,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession 
 #import  the router
 from app.routes.book_routes import book_routes
+from app.routes.publisher_routes import publisher_routes
 ##create an instance of fastAPI
 app = FastAPI()
 
@@ -15,6 +16,9 @@ from app.models import book_model, publisher_model, author_model, book_authors_m
 
 #register books router
 app.include_router(book_routes.router)
+
+#register publishe'r router
+app.include_router(publisher_routes.router)
 
 #method with db's smoke test
 async def test_db_connection(db:AsyncSession):
