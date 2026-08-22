@@ -69,4 +69,14 @@ async def update_publisher(publisher: PublisherUpdate,publisher_id:int,publisher
 
    #return the result
    return update_publisher
+
+
+#delete publisher router
+@router.delete('/{publisher_id}',status_code=status.HTTP_204_NO_CONTENT)
+#delete method
+async def delete(publisher_id:int,publisher_service = Depends(get_publisher_service)):
+   #call the service method to delete the publisher
+   delete_publisher = await publisher_service.delete_publisher(publisher_id)
+   #return the result
+   return delete_publisher
    
