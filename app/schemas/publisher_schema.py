@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict
 
-from typing import Annotated
+from typing import Annotated, Optional
 
 
 #create annotations
@@ -18,7 +18,7 @@ class PublisherCreate(PublisherBase):
 
 #Update Publisher 
 class PublisherUpdate(PublisherBase):
-     publisher: PublisherName | None = None #optional update
+     publisher: Optional[PublisherName] = None #optional update
 
 
 

@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, ConfigDict
 from decimal import Decimal
 from datetime import datetime
 from typing import Annotated
-
+from typing import Optional
 
 
 ##create types using annotated in order not to repeat myself later
@@ -39,16 +39,16 @@ class BookCreate(BookBase):
 
 #book update
 class BookUpdate(BookBase):
-    title: BookTitle | None  = None
-    year: BookYear| None  = None
-    isbn: BookISBN| None  = None
-    price: BookPrice| None  = None
-    description: BookDescription| None  = None
+    title: Optional[BookTitle]   = None
+    year: Optional[BookYear] = None
+    isbn: Optional[BookISBN]  = None
+    price: Optional[BookPrice] = None
+    description: Optional[BookDescription]  = None
 
-    stock: BookStock| None  = None
-    genre: BookGenre| None  = None
-    language: BookLanguage| None  = None
-    publisher_id: BookPublisher_Id| None  = None
+    stock: Optional[BookStock]  = None
+    genre: Optional[BookGenre]  = None
+    language: Optional[BookLanguage]  = None
+    publisher_id: Optional[BookPublisher_Id]  = None
        
      
 

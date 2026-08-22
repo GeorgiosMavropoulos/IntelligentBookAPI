@@ -5,9 +5,13 @@ from sqlalchemy import text
 #import fast api
 from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession 
+#import  the router
+from app.routes.book_routes import book_routes
 ##create an instance of fastAPI
 app = FastAPI()
 
+#register books router
+app.include_router(book_routes.router)
 
 #method with db's smoke test
 async def test_db_connection(db:AsyncSession):
