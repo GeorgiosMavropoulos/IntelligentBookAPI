@@ -70,3 +70,14 @@ async def update( author:AuthorUpdate, author_id:int, author_service = Depends(g
     #return the result with a success message
     return {"message":"The author has been updated with success","data":author}
 
+
+#delete author endpoint
+@router.delete('/{author_id}',status_code=status.HTTP_204_NO_CONTENT)
+#METHOD to delete the author
+async def delete(author_id:int, author_service = Depends(get_author_service)):
+    #use the delete method from author service
+    delete = await author_service.delete_author(author_id)
+
+    #return the result with a message of success
+    return{"message":"The author has been deleted with success","data":delete}
+
