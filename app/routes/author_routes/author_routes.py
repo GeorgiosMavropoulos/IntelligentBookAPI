@@ -40,7 +40,7 @@ async def get_authors(skip:int = 0, limit:int = 100, author_service = Depends(ge
 #get author by id endpoint
 
 @router.get('/{id}',status_code=status.HTTP_200_OK)
-#method to retrieve the publisher
+#method to retrieve the author
 async def get_author(id:int,author_service = Depends(get_author_service)):
    #use the get method to retrieve items
    author = await author_service.get_author_by_id(id)
@@ -51,10 +51,22 @@ async def get_author(id:int,author_service = Depends(get_author_service)):
 
 #get author by name
 @router.get('/name/{author_name}',status_code=status.HTTP_200_OK)
-#method to retrieve the publisher
-async def get_publisher(author_name:str,author_service = Depends(get_author_service)):
+#method to retrieve the author
+async def get_author_by_name(author_name:str,author_service = Depends(get_author_service)):
    #use the get method to retrieve items
    author = await author_service.get_author_by_name(author_name)
    #return the result
    return {"message":"Success", "data":author}
+
+
+
+#update author endpoint
+@router.put('/{author_id}',status_code=status.HTTP_200_OK)
+#create the method to update author's data
+async def update( author:AuthorUpdate, author_id:int, author_service = Depends(get_author_service)):
+    #use the update method from author_service.py to update the data
+    update = await author_service.update_author(author,author_id)
+
+    #return the result with a success message
+    return {"message":"The author has been updated with success","data":author}
 
