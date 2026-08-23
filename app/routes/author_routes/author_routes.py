@@ -35,3 +35,26 @@ async def get_authors(skip:int = 0, limit:int = 100, author_service = Depends(ge
     #return the result with a success message
     return{"message":"Success","data":authors}
 
+
+
+#get author by id endpoint
+
+@router.get('/{id}',status_code=status.HTTP_200_OK)
+#method to retrieve the publisher
+async def get_author(id:int,author_service = Depends(get_author_service)):
+   #use the get method to retrieve items
+   author = await author_service.get_author_by_id(id)
+   #return the result
+   return {"message":"Success", "data":author}
+
+
+
+#get author by name
+@router.get('/name/{author_name}',status_code=status.HTTP_200_OK)
+#method to retrieve the publisher
+async def get_publisher(author_name:str,author_service = Depends(get_author_service)):
+   #use the get method to retrieve items
+   author = await author_service.get_author_by_name(author_name)
+   #return the result
+   return {"message":"Success", "data":author}
+
