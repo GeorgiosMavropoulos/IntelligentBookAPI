@@ -107,7 +107,7 @@ class AuthorsBooksService:
 
 
     #method to get by book's id
-    async def get_by_author_id(self,book_id:int):
+    async def get_by_book_id(self,book_id:int):
      #create a variable to delegate the result from select query
      get_books_authors = await self.db.execute(select(AuthorBooks).where(AuthorBooks.book_id == book_id))
     

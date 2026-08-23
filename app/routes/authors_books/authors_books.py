@@ -34,3 +34,40 @@ async def get_author_books_relationships(skip: int = 0, limit:int = 100, author_
     #return the result
     return{"message":"Success","data":author_book_relationships}
 
+
+#get by author author's id endpoint
+@router.get('/{author_id}',status_code=status.HTTP_200_OK)
+#method to fetch by author's id
+async def get_author_books_relationships_by_author_id(author_id:int, author_book_service=Depends(get_author_book_service)):
+    #call the method from author books service to fetch all books realtionship connected to author's id
+    author_book_relationships = await author_book_service.get_by_author_id(author_id)
+
+    #return the result
+    return{"message":"Success","data":author_book_relationships}
+
+
+
+#get by book's id endpoint
+@router.get('/by_book_id/{book_id}',status_code=status.HTTP_200_OK)
+#method to fetch by author's id
+async def get_author_books_relationships_by_book_id(book_id:int, author_book_service=Depends(get_author_book_service)):
+    #call the method from author books service to fetch all books realtionship connected to author's id
+    author_book_relationships = await author_book_service.get_by_book_id(book_id)
+
+    #return the result
+    return{"message":"Success","data":author_book_relationships}
+
+
+
+#delete relation 
+@router.delete('/{book_id}/{author_id}',status_code=status.HTTP_204_NO_CONTENT)
+#method to delete a relation by entering author's and book's id
+async def delete_relation_author_book(book_id:int, author_id:int, author_book_service=Depends(get_author_book_service)):
+    #call the method from author books service to delete the relation
+    delete_relation_author_book = await author_book_service.delete_relation(book_id,author_id)
+
+
+    #return the result with a message of success
+    return{"message":"Author-book relation deleted","data":delete_relation_author_book}
+
+
