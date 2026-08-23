@@ -18,6 +18,15 @@ class PublisherService:
          #delegate into a a variable model's attributes
          publisher = Publisher(publisher =publisher.publisher)
 
+         #search if there's another publisher with the same name registerd
+         publisher_exists = await self.db.execute(select(Publisher).where(Publisher.publisher == publisher.publisher))
+         #extract the orm objct from result
+         requested_publisher = publisher_exists.scalar_one_or_none()
+
+         #return a duplicate publisher exception if publisher already exists
+         if requested_publisher is not None:
+            raise DuplicatePublisher() 
+
          #add the puiblisher
          self.db.add(publisher)
          #commit into the db
@@ -31,7 +40,7 @@ class PublisherService:
         #return exception for duplicate publisher
         except IntegrityError as e:
            await self.db.rollback()
-           raise DuplicatePublisher(publisher.publisher) from e
+           raise 
         #return general exception
         except:
            await self.db.rollback()
@@ -57,7 +66,7 @@ class PublisherService:
 
        #return an error message if publisher doesn't exist
        if publisher is None:
-          raise PublisherNotFound("The publisher you are looking for does not exist")
+          raise PublisherNotFound()
 
 
        #return publisher if all goes well
@@ -74,7 +83,7 @@ class PublisherService:
        
        #return an error message if publisher doesn't exist
        if publisher is None:
-          raise PublisherNotFound("The publisher you are looking for does not exist")
+          raise PublisherNotFound()
 
 
         #return publisher if all goes well
@@ -92,7 +101,19 @@ class PublisherService:
 
           #return an error message if publisher does not exists
           if updated_publisher is None:
-             raise PublisherNotFound("Publisher does not exist")
+             raise PublisherNotFound()
+
+
+          #validate if there's another publisher with the same name available if publisher name was given
+          if publisher:
+             search_publisher = await self.db.execute(select(Publisher).where(Publisher.publisher == publisher.publisher, Publisher.id != publisher_id))
+
+             #extract the orm object from the result
+             publisher_exists = search_publisher.scalar_one_or_none()
+
+             #raise the exception if publisher name exists in another row
+             if publisher_exists is not None:
+                raise DuplicatePublisher()
 
           #use model dump since not all attributes need to change. now it's one attribute but later we may add more
           update_data = publisher.model_dump(exclude_unset=True)
@@ -112,7 +133,7 @@ class PublisherService:
        except IntegrityError as e:
           #rollback to cancel the db operation
           await self.db.rollback()
-          raise DuplicatePublisher(publisher.publisher) from e
+          raise 
        #return a general exception
        except:
           await self.db.rollback()
@@ -132,7 +153,7 @@ class PublisherService:
 
           #return an error message if row count == 0
           if deleted_rows <=0:
-             raise PublisherNotFound("The publisher you tried to delete, does not exist")
+             raise PublisherNotFound()
 
           #if all goes well commit
           await self.db.commit()
