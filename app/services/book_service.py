@@ -26,12 +26,23 @@ class BookService:
 
             #return an error message if publisher does not exist
             if publisher is None:
-                raise PublisherNotFound("The given publisher does not exist.Please create the publisher first")
+                raise PublisherNotFound()
  
 
             #delegate into a a variable model's attributes
             new_book = Book(title=book.title,
             year=book.year, isbn=book.isbn,price=book.price,genre=book.genre,language=book.language, description = book.description, publisher_id=book.publisher_id,stock=book.stock)
+
+             #search if given ISBN already exists
+            given_isbn_exist = await self.db.execute(select(Book).where(Book.isbn== new_book.isbn))
+
+            #extract the orm objct from the result
+            isbn = given_isbn_exist.scalar_one_or_none()
+
+            #return an error message if the isbn is duplicated
+            if isbn is not None:
+                raise DuplicateISBNException()
+
 
             #add the book
             self.db.add(new_book)
@@ -43,9 +54,6 @@ class BookService:
             #raise exception for duplicate isbn
         except IntegrityError as e:
             await self.db.rollback()
-            
-            if "isbn" in str(e.orig).lower():
-              raise DuplicateISBNException(book.isbn) from e
             raise
         
         except: #return an error if sth goes wrong and rollbakc the action
@@ -72,7 +80,7 @@ class BookService:
 
           #return an error message if book does not exist
           if book is None:
-           raise BookNotFoundException("Book does not exist")  
+           raise BookNotFoundException()  
 
           #finally return the book if all goes well
           return book
@@ -87,7 +95,7 @@ class BookService:
 
        #return an error message if book does not exist
       if len(books) == 0:
-         raise BookNotFoundException("Book does not exist")  
+         raise BookNotFoundException()  
       
      #finally return the book if all goes well
       return books
@@ -107,7 +115,34 @@ class BookService:
            
             #return  exception if book does not exist
            if updated_book is None:
-            raise BookNotFoundException("Book does not exist")  
+            raise BookNotFoundException()  
+
+
+
+           #validate that another book with the same isbn does not exist if isbn has been given
+           if book.isbn:
+            isbn_exists_already = await self.db.execute(select(Book).where(Book.isbn == book.isbn,Book.id != book_id))
+
+            #extract the orm objct from result
+            given_isbn_exist = isbn_exists_already.scalar_one_or_none()
+
+            #return an error message if another book with the same isbn already exist
+            if given_isbn_exist is not None:
+                raise DuplicateISBNException()
+
+
+            #search if publisher does not exist if new publisher has been given
+            if book.publisher_id:
+              publisher_exist = await self.db.execute(select(Publisher).where(Publisher.id == book.publisher_id))
+
+              #retrieve the objct from the result
+              given_publisher = publisher_exist.scalar_one_or_none()
+              #raise an exception if publisher wasn't found
+              if  given_publisher is None:
+                  raise PublisherNotFound()
+              
+
+            #######
 
            update_data = book.model_dump(exclude_unset=True) #use model dump since not all attributes should be changed
 
@@ -125,7 +160,7 @@ class BookService:
        #raise exception for duplicate isbn
        except IntegrityError as e:
                await self.db.rollback()
-               raise DuplicateISBNException(book.isbn) from e
+               raise
        except: #return an error if sth goes wrong and rollbakc the action
                await self.db.rollback()
                raise     
@@ -142,7 +177,7 @@ class BookService:
           deleted_rows = delete_book.rowcount
           #return an error message if book does not exist
           if deleted_rows <= 0:
-           raise BookNotFoundException("Book does not exist")
+           raise BookNotFoundException()
 
           #commit if all goes well
           await self.db.commit()

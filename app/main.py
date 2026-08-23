@@ -21,6 +21,9 @@ from .models import book_model, publisher_model, author_model, book_authors_mode
 
 ##register exception handler
 app.add_exception_handler(ExceptionServiceHandler, exception_service_handler)
+
+
+
 #register books router
 app.include_router(book_router)
 
