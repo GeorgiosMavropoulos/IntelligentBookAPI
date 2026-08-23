@@ -24,3 +24,14 @@ async def create(author:AuthorCreate, author_service = Depends(get_author_servic
     #return the result
     return{"message":"Author added with success","data":author}
 
+
+#get authors endpoint
+@router.get('/',status_code=status.HTTP_200_OK)
+#Method to fetch authors
+async def get_authors(skip:int = 0, limit:int = 100, author_service = Depends(get_author_service)):
+    #call the service method to fetch all authors and delegate the result in a variable
+    authors = await author_service.get_all_authors(skip,limit)
+
+    #return the result with a success message
+    return{"message":"Success","data":authors}
+
