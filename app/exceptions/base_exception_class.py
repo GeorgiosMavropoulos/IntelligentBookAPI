@@ -10,8 +10,8 @@ class ExceptionServiceHandler(Exception):
            self.message = message
            self.code = code #string id for frontend if needs be
 
-     #exception handler to handle the exceptions
-
+   
+  #exception handler to handle the exceptions
 async def exception_service_exception_handler(request:Request,exception:ExceptionServiceHandler):
            #return the response
            return JSONResponse(

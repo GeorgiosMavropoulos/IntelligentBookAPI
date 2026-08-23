@@ -12,6 +12,8 @@ class AuthorService:
      def __init__(self, db:AsyncSession):
         self.db = db
 
+        
+
 
     #create author method
      async def create_author(self,author:AuthorCreate):
@@ -19,6 +21,17 @@ class AuthorService:
       try:
          #create a  new variable and delegate model's attributes
          new_author = Author(author=author.author)
+
+         #validate if author's name already exists
+         author_exist = await self.db.execute(select(Author).where(Author.author == author.author))
+
+         #exctract the result as an orm objct
+         requested_author = author_exist.scalar_one_or_none()
+
+         #return an exception if author already exists
+         if requested_author  is not None:
+            
+          raise DuplicateAuthorxception() 
 
          #add the author to the db
          self.db.add(new_author)
@@ -32,7 +45,7 @@ class AuthorService:
       ##handle exception for duplicate author's name
       except IntegrityError as e:
          await self.db.rollback()
-         raise DuplicateAuthorxception(author.author) from e
+         raise 
       except:  
          #return an exception and rollback the action
          await self.db.rollback()
@@ -58,7 +71,7 @@ class AuthorService:
 
          #return an error message if author does not exist
          if author is None:
-            raise AuthorNotFoundException("Author does not exist")
+            raise AuthorNotFoundException()
 
          #return author if exists
          return author
@@ -73,7 +86,7 @@ class AuthorService:
       author =  result.scalar_one_or_none()
        #return an error message if author does not exist
       if author is None:
-       raise AuthorNotFoundException("Author does not exist")
+       raise AuthorNotFoundException()
 
        #return author if exists
       return author
@@ -92,7 +105,18 @@ class AuthorService:
 
           #return an error message if author not found
           if update_author is None:
-             raise AuthorNotFoundException("Cannot find the requested author")
+             raise AuthorNotFoundException()
+
+
+          #validate if another author exists with the same name but with a different id
+          search_author_exist = await self.db.execute(select(Author).where(Author.author == author.author,  Author.id != author_id))
+
+          #use scalars method to extract the orm object
+          retrieved_result = search_author_exist.scalar_one_or_none()
+
+          #raise an exception if author exists
+          if retrieved_result is not None:
+             raise DuplicateAuthorxception()
 
           update_data = author.model_dump(exclude_unset=True) #use model dump since not all attributes should be changed
           #if all goes well update the author's name
@@ -110,7 +134,7 @@ class AuthorService:
          #return an exception if author's name is duplicate
          except IntegrityError as e:
           await self.db.rollback() #roll back the action if update fails
-          raise DuplicateAuthorxception(author.author) from e
+          raise 
          
          except:
             await self.db.rollback() #roll back the action if update fails
@@ -130,7 +154,7 @@ class AuthorService:
            delete_rows = delete_author.rowcount
            #return an error message if no row got deleted
            if delete_rows <= 0:
-              raise AuthorNotFoundException("This author does not exist")
+              raise AuthorNotFoundException()
 
            #if all goes well commit
            await self.db.commit()
