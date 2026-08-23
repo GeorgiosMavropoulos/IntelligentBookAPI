@@ -22,3 +22,15 @@ async def create_author_book_relationship(author_book:CreateBookAuthors,author_b
 
     #return the result with a message of success
     return{"message":"New relation between author and book was created","data":new_author_book_relation}
+
+
+#get all author books relation endpoint
+@router.get('/',status_code=status.HTTP_200_OK)
+#method to get all author books relations
+async def get_author_books_relationships(skip: int = 0, limit:int = 100, author_book_service=Depends(get_author_book_service)):
+    #call the method from author books service to fetch all books
+    author_book_relationships = await author_book_service.get_authors_books(skip,limit)
+
+    #return the result
+    return{"message":"Success","data":author_book_relationships}
+
