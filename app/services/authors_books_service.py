@@ -6,8 +6,6 @@ from ..models.book_authors_model import AuthorBooks
 from ..schemas.book_authors_schema import CreateBookAuthors
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select,delete
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy import Boolean
 from ..models import author_model, book_model, book_authors_model
 
 #create the class
@@ -65,6 +63,16 @@ class AuthorsBooksService:
 
 
             #search if this relation already exists
+            search_relation = await self.db.execute(select(AuthorBooks).where(AuthorBooks.book_id == authors_books.book_id, AuthorBooks.author_id == authors_books.author_id))
+
+            #extract the orm objct from result
+            relation_exists = search_relation.scalar_one_or_none()
+
+            #return an error message and raise the exception if the relation exists
+            if relation_exists is not None:
+                raise DuplicateAuthorBookEntry()
+
+            
             #add the relation
             self.db.add(relation)
             #commit the action
@@ -90,6 +98,8 @@ class AuthorsBooksService:
         #use scalars to extract the  result
         books_authors = get_books_authors.scalars().all()
 
+       
+
         #return the result
         return books_authors
 
@@ -104,7 +114,7 @@ class AuthorsBooksService:
 
          #return an error message if not found
          if len(books_authors) == 0:
-             raise AuthorNotFoundException()
+             raise NotFound()
          #return the result
          return books_authors
 
@@ -119,7 +129,7 @@ class AuthorsBooksService:
     
      #return an error message if not found
      if len(books_authors) == 0:
-       raise BookNotFoundException()
+       raise NotFound()
      
        #return the result
      return books_authors
