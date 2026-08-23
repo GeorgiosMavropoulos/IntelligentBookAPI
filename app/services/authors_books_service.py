@@ -55,13 +55,16 @@ class AuthorsBooksService:
 
             #search if given author id matches with an existent author
             if not await self._author_exists(authors_books.author_id): # use author exists method
-                raise AuthorNotFoundException("The author does not exist")
+                raise AuthorNotFoundException()
 
             #search if given book id matches with an existent book
             elif not await self._book_exists(authors_books.book_id): # use book exists method
-                raise BookNotFoundException("The book does not exist")
+                raise BookNotFoundException()
 
             relation = AuthorBooks(book_id=authors_books.book_id, author_id=authors_books.author_id)
+
+
+            #search if this relation already exists
             #add the relation
             self.db.add(relation)
             #commit the action
@@ -101,7 +104,7 @@ class AuthorsBooksService:
 
          #return an error message if not found
          if len(books_authors) == 0:
-             raise AuthorNotFoundException("No relations found about the requested author")
+             raise AuthorNotFoundException()
          #return the result
          return books_authors
 
@@ -116,7 +119,7 @@ class AuthorsBooksService:
     
      #return an error message if not found
      if len(books_authors) == 0:
-       raise BookNotFoundException("No relations found about the requested book")
+       raise BookNotFoundException()
      
        #return the result
      return books_authors
@@ -137,7 +140,7 @@ class AuthorsBooksService:
          #return an error if deleted_rows <= 0
          if deleted_rows <=0:
              await self.db.rollback()
-             raise NotFound("Author and book relation does not exist")
+             raise NotFound()
 
 
          #commit if all goes well
