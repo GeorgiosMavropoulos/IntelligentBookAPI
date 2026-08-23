@@ -1,14 +1,15 @@
 ##this file contains exception classes for book
-
+#import the exception handler I wrote
+from ..base_exception_class import ExceptionServiceHandler
 #first exception class ISBN uniqueness
-class DuplicateISBNException(Exception):
+class DuplicateISBNException(ExceptionServiceHandler):
     pass
 
 ##book not found exception
-class BookNotFoundException(Exception):
+class BookNotFoundException(ExceptionServiceHandler):
     pass
 
 
 #publisher does not exist
-class PublisherNotFound(Exception):
+class PublisherNotFound(ExceptionServiceHandler):
     pass
