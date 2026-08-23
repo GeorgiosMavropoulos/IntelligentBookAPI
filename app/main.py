@@ -10,7 +10,7 @@ from .routes.book_routes.book_routes import router as book_router
 from .routes.publisher_routes.publisher_routes import router as publisher_router
 from .routes.author_routes.author_routes import router as author_router
 from .routes.authors_books.authors_books import router as author_book_router
-
+import os
 ##import the exception handler 
 from .exceptions.base_exception_class import ExceptionServiceHandler, exception_service_handler
 ##create an instance of fastAPI
