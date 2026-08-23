@@ -1,5 +1,5 @@
 #import book model
-from ..models import author_model
+from ..models.author_model import Author
 from ..schemas.author_schema import AuthorCreate, AuthorUpdate, AuthorResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select,delete
@@ -18,7 +18,7 @@ class AuthorService:
       #try except for error handling
       try:
          #create a  new variable and delegate model's attributes
-         new_author = author_model(author=author.author)
+         new_author = Author(author=author.author)
 
          #add the author to the db
          self.db.add(new_author)
@@ -42,7 +42,7 @@ class AuthorService:
       #get all authors
      async def get_all_authors(self, skip: int = 0, limit: int = 100):
          #create a variable to delegate to it the result
-         result = await self.db.execute(select(author_model.Author).offset(skip).limit(limit))
+         result = await self.db.execute(select(Author).offset(skip).limit(limit))
 
          #return the result
          return result.scalars().all()
@@ -51,7 +51,7 @@ class AuthorService:
      #get author by id 
      async def get_author_by_id(self, author_id:int):
         #create a variable to delegate to it the result
-         result = await self.db.execute(select(author_model.Author).where(author_model.Author.id == author_id))
+         result = await self.db.execute(select(Author).where(Author.id == author_id))
 
           #check if author exists
          author =  result.scalar_one_or_none()
@@ -67,7 +67,7 @@ class AuthorService:
      #get author by name function
      async def get_author_by_name(self,author_name:str):
       #create a variable to delegate to it the result
-      result = await self.db.execute(select(author_model.Author).where(author_model.Author.author == author_name))
+      result = await self.db.execute(select(Author).where(Author.author == author_name))
 
       #check if author exists
       author =  result.scalar_one_or_none()
@@ -85,7 +85,7 @@ class AuthorService:
         #try except for error handling
          try:
           #try to retrieve the requested author to see if exists
-          result = await self.db.execute(select(author_model.Author).where(author_model.Author.id == author_id))
+          result = await self.db.execute(select(Author).where(Author.id == author_id))
 
           #retrieve the result from the object
           update_author = result.scalar_one_or_none()
@@ -124,7 +124,7 @@ class AuthorService:
           try:
 
            #create a variable to delegate delete method
-           delete_author = await self.db.execute(delete(author_model.Author).where(author_model.Author.id == author_id))
+           delete_author = await self.db.execute(delete(Author).where(Author.id == author_id))
 
             #create a variable delete_rows to access row count
            delete_rows = delete_author.rowcount
