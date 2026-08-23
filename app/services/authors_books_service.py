@@ -61,7 +61,7 @@ class AuthorsBooksService:
             elif not await self._book_exists(authors_books.book_id): # use book exists method
                 raise BookNotFoundException("The book does not exist")
 
-            relation = book_authors_model(book_id=authors_books.book_id, author_id=authors_books.author_id)
+            relation = AuthorBooks(book_id=authors_books.book_id, author_id=authors_books.author_id)
             #add the relation
             self.db.add(relation)
             #commit the action
@@ -82,7 +82,7 @@ class AuthorsBooksService:
     async def get_authors_books(self,skip:int=0, limit:int = 100):
 
         #create a variable to delegate the result from select query
-        get_books_authors = await self.db.execute(select(book_authors_model.AuthorBooks).offset(skip).limit(limit))
+        get_books_authors = await self.db.execute(select(AuthorBooks).offset(skip).limit(limit))
 
         #use scalars to extract the  result
         books_authors = get_books_authors.scalars().all()
@@ -94,7 +94,7 @@ class AuthorsBooksService:
     #method to get by author's id
     async def get_by_author_id(self,author_id:int):
          #create a variable to delegate the result from select query
-         get_books_authors = await self.db.execute(select(book_authors_model).where(book_authors_model.AuthorBooks.author_id == author_id))
+         get_books_authors = await self.db.execute(select(AuthorBooks).where(AuthorBooks.author_id == author_id))
 
          #extract the result
          books_authors = get_books_authors.scalars().all()
@@ -109,7 +109,7 @@ class AuthorsBooksService:
     #method to get by book's id
     async def get_by_author_id(self,book_id:int):
      #create a variable to delegate the result from select query
-     get_books_authors = await self.db.execute(select(book_authors_model).where(book_authors_model.AuthorBooks.book_id == book_id))
+     get_books_authors = await self.db.execute(select(AuthorBooks).where(AuthorBooks.book_id == book_id))
     
      #extract the result
      books_authors = get_books_authors.scalars().all()
@@ -127,8 +127,8 @@ class AuthorsBooksService:
     async def delete_relation(self, book_id:int, author_id:int):
         try:
             #create a variable and delegate the delete query
-         delete_data = await self.db.execute(delete(book_authors_model.AuthorBooks)
-                       .where(book_authors_model.AuthorBooks.book_id == book_id, book_authors_model.AuthorBooks.author_id == author_id))
+         delete_data = await self.db.execute(delete(AuthorBooks)
+                       .where(AuthorBooks.book_id == book_id, AuthorBooks.author_id == author_id))
 
          #verify that rows were actually deleted
          #create a variable to delegate row count
