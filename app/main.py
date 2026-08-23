@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .routes.book_routes.book_routes import router as book_router
 from .routes.publisher_routes.publisher_routes import router as publisher_router
 from .routes.author_routes.author_routes import router as author_router
-
+from .routes.authors_books.authors_books import router as author_book_router
 ##create an instance of fastAPI
 app = FastAPI()
 
@@ -24,6 +24,9 @@ app.include_router(publisher_router)
 
 #register author's router
 app.include_router(author_router)
+
+#register author book router
+app.include_router(author_book_router)
 
 #method with db's smoke test
 async def test_db_connection(db:AsyncSession):
