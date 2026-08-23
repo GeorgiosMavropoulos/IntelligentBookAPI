@@ -12,7 +12,7 @@ class ExceptionServiceHandler(Exception):
 
    
   #exception handler to handle the exceptions
-async def exception_service_exception_handler(request:Request,exception:ExceptionServiceHandler):
+async def exception_service_handler(request:Request,exception:ExceptionServiceHandler):
            #return the response
            return JSONResponse(
                  status_code=exception.status_code,
