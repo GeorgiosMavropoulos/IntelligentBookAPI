@@ -2,15 +2,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from ollama import AsyncClient
 from .client import AgentConnection,  ChatRequest #import messag agent
-
+#import get agent method which initializes the connection
+from .agent import get_agent
 
 #create router instance
 router = APIRouter(prefix="/chat_request", tags=["Chat_request"])
 #create a dependency function 
-  #create a helper function which initialized the agent
-def get_agent() -> AgentConnection:
-      client = AsyncClient()
-      return AgentConnection(client)
 
 #create the post class to send requests and receive responses
 @router.post('/',status_code=status.HTTP_200_OK)
