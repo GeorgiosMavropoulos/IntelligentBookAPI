@@ -13,6 +13,9 @@ from .routes.authors_books.authors_books import router as author_book_router
 import os
 ##import the exception handler 
 from .exceptions.base_exception_class import ExceptionServiceHandler, exception_service_handler
+
+#import agent router 
+from .llm.agent_routes import router as agent_router
 ##create an instance of fastAPI
 app = FastAPI()
 
@@ -35,6 +38,10 @@ app.include_router(author_router)
 
 #register author book router
 app.include_router(author_book_router)
+
+
+#register the agent
+app.include_router(agent_router)
 
 #method with db's smoke test
 async def test_db_connection(db:AsyncSession):
