@@ -1,6 +1,7 @@
 
 from ollama import AsyncClient #import ollama lib to connect with ollama. this library handles the connection with localhost's url etc
-#import the agent
+#import the agent's prompt
+from .agent_component import AgentPrompts
 
 
 ##import respense and chat request classes from agent_schema
@@ -9,9 +10,7 @@ agent = AsyncClient(host="http://localhost:11434") ##define the url the agent li
 
 class AgentConnection():
      def __init__(self, client: AsyncClient): ##initialize an async client connection with constructor
-        self.client = client
-
-      
+        self.client = client   
   
 
     #create a function which connects with hermes
@@ -19,7 +18,16 @@ class AgentConnection():
         #try-except to handle errors
         try:
             #connect with ollama agent
-            ollama_response= await self.client.chat(model="hermes3:8b",messages=[{"role":"user","content":request.message}])
+            ollama_response= await self.client.chat(model="hermes3:8b", messages = [
+    {
+        "role": "system",
+        "content": AgentPrompts.agent_prompt()
+    },
+    {
+       "role":  "user",
+       "content": request.message
+    }
+])
 
             #extract agent's response
             agent_reply = ollama_response['message']['content']
