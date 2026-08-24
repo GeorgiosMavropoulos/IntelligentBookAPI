@@ -1,9 +1,9 @@
 ##this file contains the post endpoint to interact with the agent
 from fastapi import APIRouter, Depends, HTTPException, status
 from ollama import AsyncClient
-from .client import AgentConnection,  ChatRequest #import messag agent
+from ..client.client import AgentConnection,  ChatRequest #import messag agent
 #import get agent method which initializes the connection
-from .agent import get_agent
+from ..connection.agent import get_agent
 
 #create router instance
 router = APIRouter(prefix="/chat_request", tags=["Chat_request"])

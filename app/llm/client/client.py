@@ -1,11 +1,11 @@
 
 from ollama import AsyncClient #import ollama lib to connect with ollama. this library handles the connection with localhost's url etc
 #import the agent's prompt
-from .agent_component import AgentPrompts
+from ..component.agent_component import AgentPrompts
 
 
 ##import respense and chat request classes from agent_schema
-from .agent_schema import ChatRequest, ChatResponse
+from ..schema.agent_schema import ChatRequest, ChatResponse
 agent = AsyncClient(host="http://localhost:11434") ##define the url the agent listens
 
 class AgentConnection():
