@@ -15,7 +15,7 @@ import os
 from .exceptions.base_exception_class import ExceptionServiceHandler, exception_service_handler
 
 #import agent router 
-from .llm.agent_routes import router as agent_router
+from .llm.routes.agent_routes import router as agent_router
 ##create an instance of fastAPI
 app = FastAPI()
 
